@@ -10,11 +10,12 @@ public class Cat {
         CELL = _cell;
         CELL.setCat(this);
     }
+    
+    public void setCell(Cell _cell) {
+        if (_cell == null) throw new NullPointerException("Кот не может быть в пустой ячейке!");
+        this.CELL = _cell;
+    }
 
-    public int getPosX() { return CELL.X(); }
-    public int getPosY() { return CELL.Y(); }
-
-    public void setCell(Cell _cell) {this.CELL = _cell;}
     public void unsetCell() {this.CELL = null;}
 
     public boolean isCatFunctional() {
@@ -34,6 +35,6 @@ public class Cat {
                 this.CELL.unsetCat();
                 NextCell.setCat(this);
             }
-        } else throw new IllegalStateException("Unexpected value: " + side);
+        } else throw new NullPointerException("Кот не может двигаться в неизвестном направлении!");
     }
 }

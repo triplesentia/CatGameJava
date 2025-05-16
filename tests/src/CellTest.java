@@ -1,11 +1,10 @@
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import items.Cell;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CellTests{
+public class CellTest {
     protected boolean IS_DESTROYED = false;
     protected int ROW_X, COL_Y;
 

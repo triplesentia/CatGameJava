@@ -25,13 +25,13 @@ public class Field {
 
     public boolean isCatClosed () { return !(CAT.isCatFunctional());}
 
-    public boolean isCatOnBorder () {return CAT.getPosX() == 0 || CAT.getPosX() == SIDE_X - 1 || CAT.getPosY() == 0 || CAT.getPosY() == SIDE_Y - 1;}
+    public boolean isCatOnBorder () {return CAT.CELL.X() == 0 || CAT.CELL.X() == SIDE_X - 1 || CAT.CELL.Y() == 0 || CAT.CELL.Y() == SIDE_Y - 1;}
 
     public void setCatOnField (Cat _cat) {
         if (_cat == null) throw new NullPointerException("Нельзя ставить пустого кота!");
         boolean setCat = false;
         for (Cell cell : CELLS) {
-            if (cell.X() == _cat.getPosX() && cell.Y() == _cat.getPosY()) {
+            if (cell.X() == _cat.CELL.X() && cell.Y() == _cat.CELL.Y()) {
                 setCat = true;
             }
         }
