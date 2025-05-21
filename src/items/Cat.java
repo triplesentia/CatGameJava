@@ -1,38 +1,81 @@
 package items;
 
 public class Cat {
-    Cell CELL;
-    Field FIELD;
+    private Cell cell;
 
-    public Cat(Cell _cell) {
-        if (_cell == null) throw new NullPointerException("Кот не может быть в пустой ячейке!");
-//        if (_field == null) throw new NullPointerException("Кот не может быть в пустом поле!");
-        CELL = _cell;
-        CELL.setCat(this);
+    /**
+     * Создает нового Кота в указанной Ячейке.
+     *
+     * @param newCell  Ячейка, в которой стоит Кот.
+     * @throws NullPointerException Если передана пустая Ячейка.
+     */
+    public Cat(Cell newCell) {
+        if (newCell == null) throw new NullPointerException("Кот не может быть в пустой ячейке!");
+        cell = newCell;
+        cell.setCat(this);
     }
-    
-    public void setCell(Cell _cell) {
-        if (_cell == null) throw new NullPointerException("Кот не может быть в пустой ячейке!");
-        this.CELL = _cell;
+
+    /**
+     * Получить Ячейку, в которой находится Кот
+     */
+    public Cell getCell() {return cell;}
+
+    /**
+     * Установить Ячейку для Кота
+     *
+     * @param newCell Клетка, в которой находится Кот
+     * @throws NullPointerException Если Ячейка уничтожена
+     */
+    public void setCell(Cell newCell) {
+        if (this.cell == newCell) return;
+
+        if (newCell == null) throw new NullPointerException("Кота невозможно установить в пустую ячейку!");
+
+        if (this.cell != null) this.unsetCell();
+
+        this.cell = newCell;
+        if (newCell.getCat() != this) newCell.setCat(this);
     }
 
-    public void unsetCell() {this.CELL = null;}
+    /**
+     * Убрать Кота из Ячейки
+     */
+    public void unsetCell() {
+        if (this.cell == null) return;
 
-    public boolean isCatFunctional() {
+        Cell oldCell = this.cell;
+        this.cell = null;
+        if (oldCell.getCat() == this) oldCell.unsetCat();
+    }
+
+    /**
+     * Дееспособен ли Кот<br>
+     * Проверка есть ли у Кота возможность перемещения в соседние Ячейки.
+     */
+    public boolean isFunctional() {
         for (Side side : Side.values()) {
-            Cell nextCell = CELL.getNeighbor(side);
-            if (nextCell != null && !nextCell.IS_BLOCKED) {
+            Cell nextCell = cell.getNeighbor(side);
+            if (nextCell != null && !nextCell.isBlocked()) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Перемещает кота в соседнюю ячейку в указанном направлении.
+     *
+     * @param side Направление движения.
+     *
+     * @throws NullPointerException Если направление равно null.
+     * @throws IllegalStateException Если соседняя ячейка недоступна (например, заблокирована или уничтожена).
+     *
+     */
     public void move(Side side) {
-        Cell NextCell = CELL.getNeighbor(side);
+        Cell NextCell = cell.getNeighbor(side);
         if (side != null) {
             if (NextCell!=null) {
-                this.CELL.unsetCat();
+                this.cell.unsetCat();
                 NextCell.setCat(this);
             }
         } else throw new NullPointerException("Кот не может двигаться в неизвестном направлении!");

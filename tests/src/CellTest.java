@@ -12,6 +12,7 @@ public class CellTest {
 //        super(_row, _col);
 //    }
 
+
     @Test
     public void RowCoordinateLessZero (){
         int _row = -1;

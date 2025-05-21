@@ -31,11 +31,11 @@ public class UI extends JFrame {
                 drawField(g);
             }
         };
-        gamePanel.setLayout(new GridLayout(field.SIDE_Y, field.SIDE_X));
-        gamePanel.setPreferredSize(new Dimension(field.SIDE_X * CELL_SIZE, field.SIDE_Y * CELL_SIZE));
+        gamePanel.setLayout(new GridLayout(field.getSideY(), field.getSideX()));
+        gamePanel.setPreferredSize(new Dimension(field.getSideX() * CELL_SIZE, field.getSideY() * CELL_SIZE));
 
-        for (int y = 0; y < field.SIDE_Y; y++) {
-            for (int x = 0; x < field.SIDE_X; x++) {
+        for (int y = 0; y < field.getSideY(); y++) {
+            for (int x = 0; x < field.getSideX(); x++) {
                 JPanel cellPanel = new JPanel();
                 cellPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 cellPanel.setBackground(Color.WHITE);
@@ -65,14 +65,14 @@ public class UI extends JFrame {
     }
 
     private void drawField(Graphics g) {
-        for (Cell cell : field.CELLS) {
+        for (Cell cell : field.getCells()) {
             int x = cell.X() * CELL_SIZE;
             int y = cell.Y() * CELL_SIZE;
 
-            if (cell.IS_BLOCKED) {
+            if (cell.isBlocked()) {
                 g.setColor(Color.GRAY);
                 g.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-            } else if (cell.IS_FROZEN) {
+            } else if (cell.isFrozen()) {
                 g.setColor(Color.BLUE);
                 g.fillRect(x, y, CELL_SIZE, CELL_SIZE);
             } else {
@@ -83,7 +83,7 @@ public class UI extends JFrame {
             g.setColor(Color.BLACK);
             g.drawRect(x, y, CELL_SIZE, CELL_SIZE);
 
-            if (cell.IS_OCCUPIED && field.CAT != null) {
+            if (cell.isOccupied() && field.getCat() != null) {
                 g.setColor(Color.ORANGE);
                 g.fillOval(x + 5, y + 5, CELL_SIZE - 10, CELL_SIZE - 10);
                 g.setColor(Color.BLACK);
@@ -94,10 +94,10 @@ public class UI extends JFrame {
 
     private void handleCellClick(int x, int y) {
         if (!gameStarted && !gameEnded) {
-            for (Cell cell : field.CELLS) {
+            for (Cell cell : field.getCells()) {
                 if (cell.X() == x && cell.Y() == y) {
                     Cat cat = new Cat(cell);
-                    field.setCatOnField(cat);
+                    field.setCat(cat);
                     gameStarted = true;
                     statusLabel.setText("Игра началась! Блокируйте клетки вокруг кота");
                     drawField(gamePanel.getGraphics());
@@ -105,8 +105,8 @@ public class UI extends JFrame {
                 }
             }
         } else if (!gameEnded) {
-            for (Cell cell : field.CELLS) {
-                if (cell.X() == x && cell.Y() == y && !cell.IS_OCCUPIED) {
+            for (Cell cell : field.getCells()) {
+                if (cell.X() == x && cell.Y() == y && !cell.isOccupied()) {
                     cell.block(true);
                     drawField(gamePanel.getGraphics());
                     checkGameStatus();
@@ -119,17 +119,17 @@ public class UI extends JFrame {
 
     //TODO написать алгоритм перемещения и нахождения пути проще
     private void moveCat() {
-        if (field.CAT == null) return;
+        if (field.getCat() == null) return;
 
         Side[] possibleMoves = Side.values();
         Random random = new Random();
 
         for (int i = 0; i < 10; i++) {
             Side move = possibleMoves[random.nextInt(possibleMoves.length)];
-            Cell nextCell = field.CAT.CELL.getNeighbor(move);
+            Cell nextCell = field.getCat().getCell().getNeighbor(move);
 
-            if (nextCell != null && !nextCell.IS_BLOCKED && !nextCell.IS_FROZEN) {
-                field.CAT.move(move);
+            if (nextCell != null && !nextCell.isBlocked() && !nextCell.isFrozen()) {
+                field.getCat().move(move);
                 drawField(gamePanel.getGraphics());
                 checkGameStatus();
                 return;
@@ -148,12 +148,12 @@ public class UI extends JFrame {
     }
 
     private void resetGame() {
-        for (Cell cell : field.CELLS) {
+        for (Cell cell : field.getCells()) {
             cell.block(false);
             cell.freeze(false);
-            cell.IS_OCCUPIED = false;
+            cell.unsetCat();
         }
-        field.CAT = null;
+        field.cat = null;
         gameStarted = false;
         gameEnded = false;
         statusLabel.setText("Выберите начальную позицию кота");

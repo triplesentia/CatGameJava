@@ -1,86 +1,129 @@
 package items;
 
-import javax.security.auth.Destroyable;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
-public class Cell implements Destroyable {
-    boolean IS_FROZEN = false;
-    boolean IS_OCCUPIED = false;
-    boolean IS_DESTROYED = false;
-    boolean IS_BLOCKED = false;
+public class Cell {
+    private boolean frozen = false;
+    private boolean occupied = false; // TODO нужен ли этот флаг если можно пользоваться геттером Кота
+    private boolean destroyed = false;
+    private boolean blocked = false;
 
-    private int ROW_X, COL_Y;
-    Cat CAT;
+    private int row_x, col_y;
+    private Cat cat;
 
     private final Map<Side, Cell> neighbors = new EnumMap<>(Side.class);
 
-    public Cell(int _row, int _col) {
-        if (_row < 0) throw new IllegalArgumentException("X = " + _row + "\nX координата должна быть больше или равна нулю");
-        if (_col < 0) throw new IllegalArgumentException("Y = " + _col + "\nY координата должна быть больше или равна нулю");
-        this.ROW_X = _row;
-        this.COL_Y = _col;
+    /**
+     * Создает новую Клетку с указанными координатами.
+     *
+     * @param row  Координата X (строка) клетки.
+     * @param col  Координата Y (столбец) клетки.
+     *
+     * @throws IllegalArgumentException Если передана отрицательная координата.
+     */
+    public Cell(int row, int col) {
+        if (row < 0) throw new IllegalArgumentException("X = " + row + "\nX координата должна быть больше или равна нулю");
+        if (col < 0) throw new IllegalArgumentException("Y = " + col + "\nY координата должна быть больше или равна нулю");
+        this.row_x = row;
+        this.col_y = col;
     }
 
-    public void setNeighbor(Side side, Cell neighbor) {
-        neighbors.put(side, neighbor);
-    }
+    public boolean isFrozen() { return frozen; }
+    public boolean isOccupied() { return occupied; }
+    public boolean isDestroyed() { return destroyed; }
+    public boolean isBlocked() { return blocked; }
+    public Cat getCat() { return this.cat; }
 
-    public Cell getNeighbor(Side side) {
-        return neighbors.get(side);
-    }
+    public int X() { return this.row_x; }
+    public int Y() { return this.col_y; }
 
+    /**
+     * Установить соседа для клетки
+     *
+     * @param side сторона, для которой нужно установить соседа
+     * @param neighbor клетка-сосед
+     */
+    public void setNeighbor(Side side, Cell neighbor) { neighbors.put(side, neighbor); }
+
+    /**
+     * Получить соседа для определенной стороны
+     */
+    public Cell getNeighbor(Side side) { return neighbors.get(side); }
+
+    // TODO возможно убрать этот метод
     public Map<Side, Cell> getNeighbors() {
         return new EnumMap<>(neighbors);
     }
 
-    public boolean setCat(Cat _cat) {
-        if (IS_DESTROYED) throw new RuntimeException("Невозможно установить кота! Клетка уничтожена");
-        if (IS_BLOCKED) throw new RuntimeException("Невозможно установить кота! Клетка заблокирована");
-        if (IS_FROZEN) throw new RuntimeException("Невозможно установить кота! Клетка заморожена");
+    /**
+     * Установить Кота в Ячейку
+     *
+     * @param newCat Кот, которого нужно поставить в клетку
+     */
+    public void setCat(Cat newCat) {
+        if (destroyed) throw new RuntimeException("Клетка уничтожена!");
+        if (blocked) throw new RuntimeException("Клетка заблокирована!");
+        if (frozen) throw new RuntimeException("Клетка заморожена!");
+        if (newCat == null) throw new NullPointerException("Кот не может быть null!");
 
-        if (!IS_OCCUPIED) {
-            CAT = _cat;
-            IS_OCCUPIED = true;
-            CAT.setCell(this);
-            return true;
-        }
-        return false;
+        if (this.cat == newCat) return;
+
+        if (this.cat != null) this.unsetCat();
+
+        this.cat = newCat;
+        this.occupied = true;
+        if (newCat.getCell() != this) newCat.setCell(this);
     }
 
+    /**
+     * Убрать Кота из Ячейки
+     */
     public void unsetCat() {
-        if (this.CAT == null) throw new RuntimeException("Невозможно убрать кота, он отсутствует в клетке!");
-        if (IS_DESTROYED) throw new RuntimeException("Невозможно убрать кота! Клетка уничтожена");
-        if (IS_BLOCKED) throw new RuntimeException("Невозможно убрать кота! Клетка заблокирована");
-        if (IS_FROZEN) throw new RuntimeException("Невозможно убрать кота! Клетка заморожена");
+        if (this.cat == null) return;
 
-        if (IS_OCCUPIED) {
-            CAT.unsetCell();
-            CAT = null;
-            IS_OCCUPIED = false;
-        }
+        Cat oldCat = this.cat;
+        this.cat = null;
+        this.occupied = false;
+        if (oldCat.getCell() == this) oldCat.setCell(null);
     }
 
-    public boolean block(boolean _blocked) {
-        if (IS_DESTROYED) throw new RuntimeException("Невозможно заблокировать/разблокировать клетку! Клетка уничтожена");
-        return (IS_BLOCKED = _blocked);
+    /**
+     * Заблокировать Ячейку.<br>
+     * Блокирование Ячейки, для последующих перемещений Кота.
+     *
+     * @param blockedFlag флаг блокирования
+     *                   {@code true} - ячейка блокируется
+     *                   {@code false} - ячейка без блокировки
+     * @throws RuntimeException Если Ячейка уничтожена
+     */
+    public void block(boolean blockedFlag) {
+        if (destroyed) throw new RuntimeException("Невозможно заблокировать/разблокировать клетку! Клетка уничтожена");
+        blocked = blockedFlag;
     }
 
-    public boolean freeze(boolean _freeze) {
-        if (IS_DESTROYED) throw new RuntimeException("Невозможно заморозить/разморозить клетку! Клетка уничтожена");
-        return (IS_FROZEN = _freeze);
+    /**
+     * Заморозить Ячейку.<br>
+     * Замораживание Ячейки, для последующих перемещений Кота.<br>
+     * Предварительно метод для системного замораживания
+     *
+     * @param freezeFlag флаг заморозки
+     *                   {@code true} - ячейка замораживается
+     *                   {@code false} - ячейка размораживается
+     * @throws RuntimeException Если Ячейка уничтожена
+     */
+    public void freeze(boolean freezeFlag) {
+        if (destroyed) throw new RuntimeException("Невозможно заморозить/разморозить клетку! Клетка уничтожена");
+        frozen = freezeFlag;
     }
 
-    public int X() { return this.ROW_X; }
-    public int Y() { return this.COL_Y; }
-
-
-    @Override
+    /**
+     * Уничтожить Ячейку
+     */
     public void destroy() {
-        IS_DESTROYED = true;
-        ROW_X = -1;
-        COL_Y = -1;
+        destroyed = true;
+        row_x = -1;
+        col_y = -1;
 
         for (Cell neighbor : neighbors.values()) {
             if (neighbor != null) {
@@ -95,12 +138,12 @@ public class Cell implements Destroyable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Cell other = (Cell) obj;
-        return ROW_X == other.ROW_X &&
-                COL_Y == other.COL_Y &&
-                IS_FROZEN == other.IS_FROZEN &&
-                IS_OCCUPIED == other.IS_OCCUPIED &&
-                IS_DESTROYED == other.IS_DESTROYED &&
-                IS_BLOCKED == other.IS_BLOCKED &&
-                CAT == other.CAT;
+        return row_x == other.row_x &&
+                col_y == other.col_y &&
+                frozen == other.frozen &&
+                occupied == other.occupied &&
+                destroyed == other.destroyed &&
+                blocked == other.blocked &&
+                cat == other.cat;
     }
 }
