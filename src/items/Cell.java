@@ -62,9 +62,9 @@ public class Cell {
      * @param newCat Кот, которого нужно поставить в клетку
      */
     public void setCat(Cat newCat) {
-        if (destroyed) throw new RuntimeException("Клетка уничтожена!");
-        if (blocked) throw new RuntimeException("Клетка заблокирована!");
-        if (frozen) throw new RuntimeException("Клетка заморожена!");
+        if (destroyed) throw new IllegalStateException("Клетка уничтожена!");
+        if (blocked) throw new IllegalStateException("Клетка заблокирована!");
+        if (frozen) throw new IllegalStateException("Клетка заморожена!");
         if (newCat == null) throw new NullPointerException("Кот не может быть null!");
 
         if (this.cat == newCat) return;
@@ -85,7 +85,7 @@ public class Cell {
         Cat oldCat = this.cat;
         this.cat = null;
         this.occupied = false;
-        if (oldCat.getCell() == this) oldCat.setCell(null);
+        if (oldCat.getCell() == this) oldCat.unsetCell();
     }
 
     /**

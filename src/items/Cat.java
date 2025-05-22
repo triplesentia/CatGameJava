@@ -29,12 +29,12 @@ public class Cat {
     public void setCell(Cell newCell) {
         if (this.cell == newCell) return;
 
-        if (newCell == null) throw new NullPointerException("Кота невозможно установить в пустую ячейку!");
+        if (newCell == null) throw new NullPointerException("Кот не может быть в пустой ячейке!");
 
         if (this.cell != null) this.unsetCell();
 
         this.cell = newCell;
-        if (newCell.getCat() != this) newCell.setCat(this);
+        if (this.cell != null && newCell.getCat() != this) newCell.setCat(this);
     }
 
     /**
