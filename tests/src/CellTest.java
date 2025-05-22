@@ -17,42 +17,42 @@ public class CellTest {
     }
 
     @Test
-    public void constructor_NegativeRow_ThrowsIllegalArgumentException() {
+    public void constructorNegativeRow() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> new Cell(-1, 0));
         assertEquals("X = -1\nX координата должна быть больше или равна нулю", exception.getMessage());
     }
 
     @Test
-    public void constructor_NegativeColumn_ThrowsIllegalArgumentException() {
+    public void constructorNegativeColumn() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> new Cell(0, -1));
         assertEquals("Y = -1\nY координата должна быть больше или равна нулю", exception.getMessage());
     }
 
     @Test
-    public void isFrozen_InitiallyFalse_ReturnsFalse() {
+    public void isFrozenInitiallyFalse() {
         assertFalse(cell.isFrozen());
     }
 
     @Test
-    public void isOccupied_InitiallyFalse_ReturnsFalse() {
-        Cell emptyCell = new Cell(1, 1); // Новая ячейка без кота
+    public void isOccupiedInitiallyFalse() {
+        Cell emptyCell = new Cell(1, 1);
         assertFalse(emptyCell.isOccupied());
     }
 
     @Test
-    public void isDestroyed_InitiallyFalse_ReturnsFalse() {
+    public void isDestroyedInitiallyFalse() {
         assertFalse(cell.isDestroyed());
     }
 
     @Test
-    public void isBlocked_InitiallyFalse_ReturnsFalse() {
+    public void isBlockedInitiallyFalse() {
         assertFalse(cell.isBlocked());
     }
 
     @Test
-    public void getCat_WithCat_ReturnsCat() {
+    public void getCatWithCat() {
         assertEquals(cat, cell.getCat());
     }
 
@@ -67,48 +67,46 @@ public class CellTest {
     }
 
     @Test
-    public void setNeighbor_AddsNeighborCorrectly() {
+    public void setNeighborAddsNeighborCorrectly() {
         Cell neighbor = new Cell(0, 1);
         cell.setNeighbor(Side.RIGHT, neighbor);
         assertEquals(neighbor, cell.getNeighbor(Side.RIGHT));
     }
 
     @Test
-    public void getNeighbor_NoNeighbor_ReturnsNull() {
+    public void getNeighborNoNeighbor() {
         assertNull(cell.getNeighbor(Side.LEFT));
     }
 
     @Test
-    public void getNeighbors_ReturnsCopyOfNeighbors() {
+    public void getNeighborsReturnsCopyOfNeighbors() {
         Cell neighbor = new Cell(0, 1);
         cell.setNeighbor(Side.RIGHT, neighbor);
 
         Map<Side, Cell> neighbors = cell.getNeighbors();
         assertEquals(neighbor, neighbors.get(Side.RIGHT));
-
-        // Проверяем, что это копия
+        
         neighbors.remove(Side.RIGHT);
         assertNotNull(cell.getNeighbor(Side.RIGHT));
     }
 
     @Test
-    public void setCat_SetsCatCorrectly() {
+    public void setCatSetsCatCorrectly() {
         Cell newCell = new Cell(1, 0);
-        Cat newCat = new Cat(newCell); // Кот создается с новой ячейкой
-
-        // Перемещаем кота в тестируемую ячейку
+        Cat newCat = new Cat(newCell);
+        
         newCell.setCat(newCat);
         assertEquals(newCat, newCell.getCat());
         assertTrue(newCell.isOccupied());
     }
 
     @Test
-    public void setCat_NullCat_ThrowsNullPointerException() {
+    public void setCatNullCat() {
         assertThrows(NullPointerException.class, () -> cell.setCat(null));
     }
 
     @Test
-    public void setCat_DestroyedCell_ThrowsRuntimeException() {
+    public void setCatDestroyedCell() {
         cell.destroy();
         Cell newCell = new Cell(1, 1);
         Cat newCat = new Cat(newCell);
@@ -116,7 +114,7 @@ public class CellTest {
     }
 
     @Test
-    public void setCat_BlockedCell_ThrowsRuntimeException() {
+    public void setCatBlockedCell() {
         cell.block(true);
         Cell newCell = new Cell(1, 1);
         Cat newCat = new Cat(newCell);
@@ -124,7 +122,7 @@ public class CellTest {
     }
 
     @Test
-    public void setCat_FrozenCell_ThrowsRuntimeException() {
+    public void setCatFrozenCell() {
         cell.freeze(true);
         Cell newCell = new Cell(1, 1);
         Cat newCat = new Cat(newCell);
@@ -132,28 +130,28 @@ public class CellTest {
     }
 
     @Test
-    public void setCat_SameCat_DoesNothing() {
-        cell.setCat(cat); // Кот уже находится в этой ячейке
+    public void setCatSameCa() {
+        cell.setCat(cat);
         assertEquals(cat, cell.getCat());
     }
 
     @Test
-    public void unsetCat_RemovesCatCorrectly() {
+    public void unsetCatRemovesCatCorrectly() {
         cell.unsetCat();
         assertNull(cell.getCat());
         assertFalse(cell.isOccupied());
-        assertNull(cat.getCell()); // Проверяем, что у кота тоже обнулилась ячейка
+        assertNull(cat.getCell());
     }
 
     @Test
-    public void unsetCat_NoCat_DoesNothing() {
+    public void unsetCatNoCat() {
         Cell emptyCell = new Cell(1, 1);
-        emptyCell.unsetCat(); // Не должно вызывать исключений
+        emptyCell.unsetCat();
         assertNull(emptyCell.getCat());
     }
 
     @Test
-    public void block_SetsBlockedFlagCorrectly() {
+    public void blockSetsBlockedFlagCorrectly() {
         cell.block(true);
         assertTrue(cell.isBlocked());
 
@@ -162,13 +160,13 @@ public class CellTest {
     }
 
     @Test
-    public void block_DestroyedCell_ThrowsRuntimeException() {
+    public void blockDestroyedCell() {
         cell.destroy();
         assertThrows(RuntimeException.class, () -> cell.block(true));
     }
 
     @Test
-    public void freeze_SetsFrozenFlagCorrectly() {
+    public void freezeSetsFrozenFlagCorrectly() {
         cell.freeze(true);
         assertTrue(cell.isFrozen());
 
@@ -177,13 +175,13 @@ public class CellTest {
     }
 
     @Test
-    public void freeze_DestroyedCell_ThrowsRuntimeException() {
+    public void freezeDestroyedCell() {
         cell.destroy();
         assertThrows(RuntimeException.class, () -> cell.freeze(true));
     }
 
     @Test
-    public void destroy_SetsDestroyedFlagAndClearsNeighbors() {
+    public void destroySetsDestroyedFlagAndClearsNeighbors() {
         Cell neighbor = new Cell(0, 1);
         cell.setNeighbor(Side.RIGHT, neighbor);
         neighbor.setNeighbor(Side.LEFT, cell);
@@ -197,35 +195,35 @@ public class CellTest {
     }
 
     @Test
-    public void equals_SameObject_ReturnsTrue() {
+    public void equalsSameObject() {
         assertEquals(cell, cell);
     }
 
     @Test
-    public void equals_NullObject_ReturnsFalse() {
+    public void equalsNullObject() {
         assertNotEquals(cell, null);
     }
 
     @Test
-    public void equals_DifferentClass_ReturnsFalse() {
+    public void equalsDifferentClass() {
         assertNotEquals(cell, new Object());
     }
 
     @Test
-    public void equals_DifferentCoordinates_ReturnsFalse() {
+    public void equalsDifferentCoordinates() {
         Cell other = new Cell(1, 1);
         assertNotEquals(cell, other);
     }
 
     @Test
-    public void equals_DifferentState_ReturnsFalse() {
+    public void equalsDifferentState() {
         Cell other = new Cell(0, 0);
         other.block(true);
         assertNotEquals(cell, other);
     }
 
     @Test
-    public void equals_DifferentCat_ReturnsFalse() {
+    public void equalsDifferentCat() {
         Cell cell1 = new Cell(0, 0);
         Cat cat1 = new Cat(cell1);
 
@@ -236,12 +234,12 @@ public class CellTest {
     }
 
     @Test
-    public void catConstructor_NullCell_ThrowsNullPointerException() {
+    public void catConstructorNullCell() {
         assertThrows(NullPointerException.class, () -> new Cat(null));
     }
 
     @Test
-    public void catConstructor_SetsCellAndCatCorrectly() {
+    public void catConstructorSetsCellAndCatCorrectly() {
         Cell newCell = new Cell(1, 1);
         Cat newCat = new Cat(newCell);
 
