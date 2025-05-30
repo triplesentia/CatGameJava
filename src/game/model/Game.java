@@ -34,11 +34,11 @@ public class Game {
         gameField = new Field(fieldSideLength);
         gameField.addFieldActionListener(new FieldObserver());
 
-        if (getRobot() == null) {
-            throw new RuntimeException("No robot found");
+        if (getCat() == null) {
+            throw new RuntimeException("No cat found");
         }
 
-        getRobot().addRobotActionListener(new RobotObserver());
+        getCat().addCatActionListener(new CatObserver());
     }
 
     /**
@@ -87,13 +87,11 @@ public class Game {
     private void updateGameStatus() {
         GameStatus status = GameStatus.GAME_IS_ON;
 
-        if (!getRobot().isCapable()) {
-            if (getRobot().isTeleported()) {
-                status = GameStatus.WIN;
-            }
-            else {
-                status = GameStatus.LOSS;
-            }
+        if (gameField.isPerimeterCell(getCat().getPosition())) {
+            status = GameStatus.LOSS;
+        }
+        else if (!gameField.canCatEscapeToPerimeter()) {
+            status = GameStatus.WIN;
         }
 
         setStatus(status);
@@ -119,15 +117,15 @@ public class Game {
 
     //endregion
 
-    //region РОБОТ
+    //region КОТ
 
     /**
-     * Получить робота {@link Field#getRobot()}.
+     * Получить кота {@link Field#getCat()}.
      *
-     * @return робот.
+     * @return кот.
      */
-    public Robot getRobot() {
-        return gameField.get();
+    public Cat getCat() {
+        return gameField.getCat();
     }
 
     //endregion
@@ -135,18 +133,13 @@ public class Game {
     //region СЛУШАТЕЛИ
 
     /**
-     * Класс, реализующий наблюдение за событиями {@link RobotActionListener}.
+     * Класс, реализующий наблюдение за событиями {@link CatActionListener}.
      */
-    private class RobotObserver implements RobotActionListener {
+    private class CatObserver implements CatActionListener {
 
         @Override
-        public void robotIsMoved(@NotNull RobotActionEvent event) {
-            fireRobotIsMoved(event.getRobot());
-            updateGameStatusWithDelay();
-        }
-
-        @Override
-        public void robotChangedBattery(@NotNull RobotActionEvent event) {
+        public void catIsMoved(@NotNull CatActionEvent event) {
+            fireCatIsMoved(event.getCat());
             updateGameStatusWithDelay();
         }
     }
@@ -157,8 +150,8 @@ public class Game {
     private class FieldObserver implements FieldActionListener {
 
         @Override
-        public void robotIsTeleported(@NotNull FieldActionEvent event) {
-            fireRobotIsTeleported();
+        public void fieldCellStateChanged(@NotNull FieldActionEvent event) {
+            updateGameStatusWithDelay();
         }
     }
 
@@ -190,28 +183,16 @@ public class Game {
     }
 
     /**
-     * Оповестить слушателей {@link Game#gameActionListeners}, что робот переместился.
+     * Оповестить слушателей {@link Game#gameActionListeners}, что кот переместился.
      *
-     * @param robot робот, который переместился.
+     * @param cat кот, который переместился.
      */
-    private void fireRobotIsMoved(@NotNull Robot robot) {
+    private void fireCatIsMoved(@NotNull Cat cat) {
         GameActionEvent event = new GameActionEvent(this);
-        event.setRobot(robot);
+        event.setCat(cat);
 
         for (GameActionListener listener : gameActionListeners) {
-            listener.robotIsMoved(event);
-        }
-    }
-
-    /**
-     * Оповестить слушателей {@link Game#gameActionListeners}, что робот телепортировался.
-     */
-    private void fireRobotIsTeleported() {
-        GameActionEvent event = new GameActionEvent(this);
-        event.setRobot(getRobot());
-
-        for (GameActionListener listener : gameActionListeners) {
-            listener.robotIsTeleported(event);
+            listener.catIsMoved(event);
         }
     }
 
