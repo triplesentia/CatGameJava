@@ -24,25 +24,27 @@ public class FieldWidget extends JPanel {
 
     private void fillField() {
         int n = field.getSideLength();
-        int diameter = 2 * n - 1;
+        double hexWidth = CELL_SIZE;
+        double hexHeight = Math.sqrt(3) / 2 * CELL_SIZE;
 
-        for (int q = -n + 1; q < n; q++) {
-            for (int r = -n + 1; r < n; r++) {
-                if (Math.abs(q + r) > n - 1) continue;
-                Cell cell = field.getCell(new Point(q, r));
+        for (int x = -n + 1; x < n; x++) {
+            for (int y = -n + 1; y < n; y++) {
+                if (Math.abs(x + y) > n - 1) continue;
+                Cell cell = field.getCell(new Point(x, y));
                 if (cell == null) continue;
 
-                CellWidget cellWidget = new CellWidget(cell);
-                int col = q + n - 1;
-                int row = r + n - 1;
-                int x = CELL_SIZE * col + (row * CELL_SIZE) / 2;
-                int y = HEX_HEIGHT * row;
+                CellWidget cellWidget = widgetFactory.create(cell);
+                // key line: pixel math
+                double pixelX = hexWidth * (x + y / 2.0) + 2 * hexWidth; // +2*hexWidth for padding
+                double pixelY = hexHeight * y + 2 * hexHeight; // +2*hexHeight for padding
 
-                cellWidget.setBounds(x, y, CELL_SIZE, CELL_SIZE);
+                cellWidget.setBounds((int)pixelX, (int)pixelY, CELL_SIZE, (int)hexHeight + 1);
                 add(cellWidget);
             }
         }
-
-        setPreferredSize(new Dimension(CELL_SIZE * diameter + CELL_SIZE, HEX_HEIGHT * diameter + HEX_HEIGHT));
+        setPreferredSize(new Dimension(
+                (int)(hexWidth * (2 * n)), // enough for max horizontal
+                (int)(hexHeight * (2 * n))
+        ));
     }
 }
