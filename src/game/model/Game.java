@@ -159,7 +159,13 @@ public class Game {
         @Override
         public void fieldObstructionExecuted(@NotNull FieldActionEvent event) {
             updateGameStatus();
-            getCat().move(Direction.values()[new Random().nextInt(Direction.values().length)]);
+
+            if (getStatus() == GameStatus.GAME_IS_ON) {
+                boolean success = false;
+                while (!success) {
+                    success = getCat().move(Direction.values()[new Random().nextInt(Direction.values().length)]);
+                }
+            }
         }
     }
 
