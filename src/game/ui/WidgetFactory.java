@@ -1,0 +1,46 @@
+package game.ui;
+
+import game.model.field.Cat;
+import game.model.field.Cell;
+import game.ui.cell.CatWidget;
+import game.ui.cell.CellWidget;
+import game.ui.cell.CellItemWidget;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Фабрика виджетов для поля и объектов.
+ */
+public class WidgetFactory {
+
+    private final Map<Cell, CellWidget> cells = new HashMap<>();
+    private final Map<Cat, CatWidget> catWidgets = new HashMap<>();
+
+    /*---------- Cell ----------*/
+    public CellWidget create(Cell cell) {
+        return cells.computeIfAbsent(cell, c -> new CellWidget(c));
+    }
+
+    public CellWidget getWidget(Cell cell) {
+        return cells.get(cell);
+    }
+
+    public void remove(Cell cell) {
+        cells.remove(cell);
+    }
+
+    /*---------- Cat ----------*/
+    public CatWidget create(Cat cat) {
+        return catWidgets.computeIfAbsent(cat, c -> new CatWidget(c, Color.ORANGE));
+    }
+
+    public CatWidget getWidget(Cat cat) {
+        return catWidgets.get(cat);
+    }
+
+    public void remove(Cat cat) {
+        catWidgets.remove(cat);
+    }
+}
