@@ -1,6 +1,7 @@
 package game.model.field;
 
 import org.jetbrains.annotations.NotNull;
+import game.model.events.*;
 
 import java.util.*;
 
@@ -36,6 +37,7 @@ public class Field {
                 if (Math.abs(x + y) > sideLength - 1) continue;
                 Point p = new Point(x, y);
                 Cell cell = new Cell();
+                cell.addCellActionListener(new CellObserver());
                 cells.put(p, cell);
             }
         }
@@ -101,21 +103,13 @@ public class Field {
 
     //endregion
 
-    //region РОБОТ
+    //region СЛУШАТЕЛИ
 
-    /**
-     * Получить робота на поле.
-     *
-     * @return робот на поле.
-     */
-    public Robot getRobot() {
-        for (var cell : cells.entrySet()) {
-            Robot robot = cell.getValue().getBigObject();
-            if (robot != null) {
-                return robot;
-            }
+    private class CellObserver implements CellActionListener {
+        @Override
+        public void cellStateChanged(@NotNull CellActionEvent event) {
+            fireFieldCellStateChanged(event);
         }
-        return null;
     }
 
     //endregion
@@ -141,22 +135,20 @@ public class Field {
      *
      * @param listener слушатель.
      */
-    public void removeFieldCellActionListener(FieldActionListener listener) {
+    public void removeFieldActionListener(FieldActionListener listener) {
         fieldListListener.remove(listener);
     }
 
     /**
-     * Оповестить слушателей {@link Field#fieldListListener}, что робот телепортировался.
+     * Оповестить слушателей {@link Field#fieldListListener}, что ячейка изменила состояние.
      *
-     * @param teleport телепорт.
+     * @param event событие ячейки.
      */
-    private void fireRobotIsTeleported(@NotNull AbstractCell teleport) {
-        FieldActionEvent event = new FieldActionEvent(this);
-        event.setRobot(((ExitCell) teleport).getTeleportedRobot());
-        event.setTeleport(teleport);
-
+    private void fireFieldCellStateChanged(@NotNull CellActionEvent event) {
+        FieldActionEvent fieldEvent = new FieldActionEvent(this);
+        fieldEvent.setCell(event.getCell());
         for (FieldActionListener listener : fieldListListener) {
-            listener.robotIsTeleported(event);
+            listener.fieldCellStateChanged(fieldEvent);
         }
     }
 
