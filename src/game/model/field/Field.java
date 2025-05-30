@@ -26,6 +26,8 @@ public class Field {
         this.sideLength = sideLength;
 
         buildField();
+
+        getCell(new Point(0, 0)).setObject(new Cat());
     }
 
     /**
