@@ -27,7 +27,10 @@ public class Field {
 
         buildField();
 
-        getCell(new Point(0, 0)).setObject(new Cat());
+        boolean success = getCell(new Point(0, 0)).setObject(new Cat());
+        if (!success) {
+            throw new IllegalArgumentException("Couldn't set cat");
+        }
     }
 
     /**
