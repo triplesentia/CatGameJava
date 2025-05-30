@@ -16,4 +16,11 @@ public interface CellActionListener extends EventListener {
      * @param event объект события класса ячейка.
      */
     void cellStateChanged(@NotNull CellActionEvent event);
+
+    /**
+     * Была применена блокировка.
+     *
+     * @param event объект события класса ячейка.
+     */
+    void obstructionExecuted(@NotNull CellActionEvent event);
 }
