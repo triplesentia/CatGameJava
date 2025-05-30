@@ -101,6 +101,27 @@ public class Field {
         return cells.get(point);
     }
 
+    /**
+     * Проверяет, находится ли ячейка на периметре (краю) поля.
+     *
+     * @param cell ячейка для проверки
+     * @return true если ячейка на периметре, иначе false
+     */
+    public boolean isPerimeterCell(@NotNull Cell cell) {
+        // Найти координату этой ячейки
+        for (Map.Entry<Point, Cell> entry : cells.entrySet()) {
+            if (entry.getValue() == cell) {
+                Point p = entry.getKey();
+                int n = sideLength - 1;
+                // На периметре, если x == -n, x == n, y == -n, y == n, или x + y == -n, x + y == n
+                int x = p.getX();
+                int y = p.getY();
+                return x == -n || x == n || y == -n || y == n || (x + y) == -n || (x + y) == n;
+            }
+        }
+        return false; // Ячейка не найдена на этом поле
+    }
+
     //endregion
 
     //region СЛУШАТЕЛИ
