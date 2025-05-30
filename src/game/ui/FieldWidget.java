@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FieldWidget extends JPanel {
     private final Field field;
@@ -30,30 +32,53 @@ public class FieldWidget extends JPanel {
         double hexWidth = CELL_SIZE;
         double hexHeight = Math.sqrt(3) / 2 * CELL_SIZE;
 
+        double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
+
+        // First pass: compute all positions and bounds
+        Map<Cell, Point> positions = new HashMap<>();
         for (int x = -n + 1; x < n; x++) {
             for (int y = -n + 1; y < n; y++) {
                 if (Math.abs(x + y) > n - 1) continue;
                 Cell cell = field.getCell(new Point(x, y));
                 if (cell == null) continue;
 
-                CellWidget cellWidget = widgetFactory.create(cell);
-                double pixelX = hexWidth * (x + y / 2.0) + 2 * hexWidth;
-                double pixelY = hexHeight * y + 2 * hexHeight;
+                double pixelX = hexWidth * (x + y / 2.0);
+                double pixelY = hexHeight * y;
 
-                cellWidget.setBounds((int) pixelX, (int) pixelY, CELL_SIZE, (int) hexHeight + 1);
-                add(cellWidget);
+                // Track bounds
+                if (pixelX < minX) minX = pixelX;
+                if (pixelY < minY) minY = pixelY;
+                if (pixelX > maxX) maxX = pixelX;
+                if (pixelY > maxY) maxY = pixelY;
 
-                // If this cell has the cat, add the cat widget
-                Cat cat = cell.getObject();
-                if (cat != null) {
-                    CatWidget catWidget = widgetFactory.create(cat);
-                    cellWidget.addItem(catWidget);
-                }
+                positions.put(cell, new Point((int) pixelX, (int) pixelY));
             }
         }
+
+        // Second pass: layout cells with minX/minY offset to (0,0)
+        for (Map.Entry<Cell, Point> entry : positions.entrySet()) {
+            Cell cell = entry.getKey();
+            Point pt = entry.getValue();
+
+            CellWidget cellWidget = widgetFactory.create(cell);
+            int px = (int)(pt.getX() - minX);
+            int py = (int)(pt.getY() - minY);
+
+            cellWidget.setBounds(px, py, CELL_SIZE, (int)hexHeight + 1);
+            add(cellWidget);
+
+            // Add cat if present
+            Cat cat = cell.getObject();
+            if (cat != null) {
+                CatWidget catWidget = widgetFactory.create(cat);
+                cellWidget.addItem(catWidget);
+            }
+        }
+
         setPreferredSize(new Dimension(
-                (int) (hexWidth * (2 * n)), // enough for max horizontal
-                (int) (hexHeight * (2 * n))
+                (int)(maxX - minX + CELL_SIZE),
+                (int)(maxY - minY + hexHeight)
         ));
     }
 
