@@ -4,6 +4,7 @@ import game.model.Game;
 import game.model.GameStatus;
 import game.model.events.GameActionEvent;
 import game.model.events.GameActionListener;
+import game.model.field.ObstructionType;
 import game.ui.FieldWidget;
 import game.ui.WidgetFactory;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,7 @@ public class Main {
     }
 
     public static final int FIELD_SIDE_LENGTH = 5;
+    public static final ObstructionType OBSTRUCTION_TYPE = ObstructionType.PermanentOneCell;
 
     static class GamePanel extends JFrame {
 
