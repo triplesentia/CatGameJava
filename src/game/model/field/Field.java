@@ -95,7 +95,7 @@ public class Field {
      * @param point координата.
      * @return ячейка.
      */
-    public AbstractCell getCell(@NotNull Point point) {
+    public Cell getCell(@NotNull Point point) {
         return cells.get(point);
     }
 
@@ -176,14 +176,13 @@ public class Field {
 
         Field field = (Field) o;
 
-        return sideLength == field.sideLength && height == field.height &&
-                Objects.equals(cells, field.cells) &&
-                Objects.equals(exitCell, field.exitCell);
+        return sideLength == field.sideLength &&
+                Objects.equals(cells, field.cells);
     }
 
     @Override
     public String toString() {
-        return "Field{" + "cells=" + cells + ", width=" + sideLength + ", height=" + height + ", exitPoint=" + exitCell + '}';
+        return "Field{" + "cells=" + cells + ", sideLength=" + sideLength + '}';
     }
 
     //endregion
