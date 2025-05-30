@@ -2,6 +2,8 @@ package game.model.events;
 
 import game.model.field.Field;
 import game.model.field.Cell;
+import game.model.field.ObstructionType;
+
 import java.util.EventObject;
 
 /**
@@ -55,14 +57,14 @@ public class FieldActionEvent extends EventObject {
     /**
      * Тип блокировки, связанный с событием.
      */
-    private Cell.ObstructionType obstructionType;
+    private ObstructionType obstructionType;
 
     /**
      * Установить тип блокировки {@link FieldActionEvent#obstructionType}.
      *
      * @param obstructionType тип блокировки.
      */
-    public void setObstructionType(Cell.ObstructionType obstructionType) {
+    public void setObstructionType(ObstructionType obstructionType) {
         this.obstructionType = obstructionType;
     }
 
@@ -71,7 +73,7 @@ public class FieldActionEvent extends EventObject {
      *
      * @return тип блокировки.
      */
-    public Cell.ObstructionType getObstructionType() {
+    public ObstructionType getObstructionType() {
         return obstructionType;
     }
 
