@@ -33,7 +33,7 @@ public class WidgetFactory {
 
     /*---------- Cat ----------*/
     public CatWidget create(Cat cat) {
-        return catWidgets.computeIfAbsent(cat, c -> new CatWidget(c, Color.ORANGE));
+        return catWidgets.computeIfAbsent(cat, CatWidget::new);
     }
 
     public CatWidget getWidget(Cat cat) {
