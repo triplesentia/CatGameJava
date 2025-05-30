@@ -2,7 +2,8 @@ package game.ui;
 
 import game.model.field.*;
 import game.model.field.Point;
-import game.ui.cell.CellWidget;
+import game.model.events.*;
+import game.ui.cell.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -17,6 +18,8 @@ public class FieldWidget extends JPanel {
         this.widgetFactory = widgetFactory;
         setLayout(null); // Absolute positioning!
         fillField();
+        subscribeOnCat();
+        field.addFieldActionListener(new FieldController());
     }
 
     private static final int CELL_SIZE = 60;
@@ -34,17 +37,82 @@ public class FieldWidget extends JPanel {
                 if (cell == null) continue;
 
                 CellWidget cellWidget = widgetFactory.create(cell);
-                // key line: pixel math
-                double pixelX = hexWidth * (x + y / 2.0) + 2 * hexWidth; // +2*hexWidth for padding
-                double pixelY = hexHeight * y + 2 * hexHeight; // +2*hexHeight for padding
+                double pixelX = hexWidth * (x + y / 2.0) + 2 * hexWidth;
+                double pixelY = hexHeight * y + 2 * hexHeight;
 
-                cellWidget.setBounds((int)pixelX, (int)pixelY, CELL_SIZE, (int)hexHeight + 1);
+                cellWidget.setBounds((int) pixelX, (int) pixelY, CELL_SIZE, (int) hexHeight + 1);
                 add(cellWidget);
+
+                // If this cell has the cat, add the cat widget
+                Cat cat = cell.getObject();
+                if (cat != null) {
+                    CatWidget catWidget = widgetFactory.create(cat);
+                    cellWidget.addItem(catWidget);
+                }
             }
         }
         setPreferredSize(new Dimension(
-                (int)(hexWidth * (2 * n)), // enough for max horizontal
-                (int)(hexHeight * (2 * n))
+                (int) (hexWidth * (2 * n)), // enough for max horizontal
+                (int) (hexHeight * (2 * n))
         ));
+    }
+
+    /**
+     * Subscribe to cat events so the UI updates when the cat moves.
+     */
+    private void subscribeOnCat() {
+        Cat cat = field.getCat();
+        if (cat != null) {
+            cat.addCatActionListener(new CatController());
+        }
+    }
+
+    /**
+     * Handles cat movement and other cat events.
+     */
+    private class CatController implements CatActionListener {
+        @Override
+        public void catIsMoved(@NotNull CatActionEvent event) {
+            Cat cat = event.getCat();
+            Cell fromCell = event.getFromCell();
+            Cell toCell = event.getToCell();
+
+            CatWidget catWidget = widgetFactory.getWidget(cat);
+            if (catWidget == null) return;
+
+            CellWidget fromCellWidget = widgetFactory.getWidget(fromCell);
+            CellWidget toCellWidget = widgetFactory.getWidget(toCell);
+
+            if (fromCellWidget != null) {
+                fromCellWidget.removeItem(catWidget);
+            }
+            if (toCellWidget != null) {
+                toCellWidget.addItem(catWidget);
+            }
+            catWidget.requestFocus();
+        }
+    }
+
+    /**
+     * Handles field events, such as cell obstruction.
+     */
+    private class FieldController implements FieldActionListener {
+        @Override
+        public void fieldCellStateChanged(@NotNull FieldActionEvent event) {
+            Cell cell = event.getCell();
+            CellWidget cellWidget = widgetFactory.getWidget(cell);
+            if (cellWidget != null) {
+                cellWidget.repaint();
+            }
+        }
+
+        @Override
+        public void fieldObstructionExecuted(@NotNull FieldActionEvent event) {
+            Cell cell = event.getCell();
+            CellWidget cellWidget = widgetFactory.getWidget(cell);
+            if (cellWidget != null) {
+                cellWidget.repaint();
+            }
+        }
     }
 }
