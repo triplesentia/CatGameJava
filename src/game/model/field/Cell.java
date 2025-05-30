@@ -1,5 +1,6 @@
 package game.model.field;
 
+import game.model.events.*;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
@@ -64,6 +65,7 @@ public class Cell {
         }
 
         this.isBlocked = blocked;
+        fireCellStateChanged();
         return true;
     }
 
@@ -105,6 +107,28 @@ public class Cell {
         }
         neighbors.put(direction, neighborCell);
         return true;
+    }
+
+    //endregion
+
+    //region СИГНАЛЫ
+
+    private final List<CellActionListener> cellListeners = new ArrayList<>();
+
+    public void addCellActionListener(CellActionListener listener) {
+        cellListeners.add(listener);
+    }
+
+    public void removeCellActionListener(CellActionListener listener) {
+        cellListeners.remove(listener);
+    }
+
+    protected void fireCellStateChanged() {
+        CellActionEvent event = new CellActionEvent(this);
+        event.setCell(this);
+        for (CellActionListener listener : cellListeners) {
+            listener.cellStateChanged(event);
+        }
     }
 
     //endregion
