@@ -55,7 +55,9 @@ public class Main {
 
             JPanel content = (JPanel) this.getContentPane();
             content.removeAll();
-            content.add(new FieldWidget(game.getGameField(), widgetFactory));
+            FieldWidget fieldWidget = new FieldWidget(game.getGameField(), widgetFactory);
+            JScrollPane scrollPane = new JScrollPane(fieldWidget);
+            content.add(scrollPane);
 
             pack();
         }
