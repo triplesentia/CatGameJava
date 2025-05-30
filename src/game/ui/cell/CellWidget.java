@@ -28,8 +28,25 @@ public class CellWidget extends JPanel {
     public CellWidget(Cell cell) {
         this.cell = cell;
         setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
-        setOpaque(false); // Allow custom hex drawing
-        setLayout(null); // Items will be manually positioned in center
+        setOpaque(false);
+        setLayout(null);
+
+        // Make the hex clickable
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // Optional: check if click is inside hex, not just bounding box
+                if (isPointInHex(e.getX(), e.getY())) {
+                    cell.obstruct(Cell.ObstructionType.PermanentOneCell);
+                }
+            }
+        });
+    }
+
+    private boolean isPointInHex(int px, int py) {
+        // Simple hit-test for point inside hexagon
+        Path2D hex = createHexShape(CELL_SIZE / 2, CELL_SIZE / 2, CELL_SIZE / 2 - 2);
+        return hex.contains(px, py);
     }
 
     public Cell getCell() {
