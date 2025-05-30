@@ -49,11 +49,6 @@ public class Cell {
 
     //region БЛОКИРОВКА ЯЧЕЙКИ
 
-    public enum ObstructionType {
-        PermanentOneCell,
-        // TODO можно добавить другие типы
-    }
-
     public boolean obstruct(ObstructionType type) {
         boolean result = false;
         if (type == ObstructionType.PermanentOneCell) {
