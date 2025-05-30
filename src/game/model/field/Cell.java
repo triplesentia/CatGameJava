@@ -79,7 +79,7 @@ public class Cell {
      * @return true если состояние успешно изменено, иначе false
      */
     boolean setBlocked(boolean blocked) {
-        if (getObject() != null) {
+        if (getObject() != null || isBlocked() == blocked) {
             return false;
         }
 
