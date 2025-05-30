@@ -77,8 +77,8 @@ public class FieldWidget extends JPanel {
         }
 
         setPreferredSize(new Dimension(
-                (int)(maxX - minX + CELL_SIZE),
-                (int)(maxY - minY + hexHeight)
+                (int)(maxX - minX + CELL_SIZE + CELL_SIZE),
+                (int)(maxY - minY + hexHeight + CELL_SIZE)
         ));
     }
 
