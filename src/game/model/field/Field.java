@@ -64,8 +64,6 @@ public class Field {
 
     //region СВОЙСТВА
 
-    //region СТОРОНА
-
     /**
      * Сторона поля.
      */
@@ -81,6 +79,23 @@ public class Field {
     }
 
     //endregion
+
+    //region КОТ
+
+    /**
+     * Получить кота на поле.
+     *
+     * @return кот на поле, или null если ни один кот не найден.
+     */
+    public Cat getCat() {
+        for (var entry : cells.entrySet()) {
+            Cat cat = entry.getValue().getObject();
+            if (cat != null) {
+                return cat;
+            }
+        }
+        return null;
+    }
 
     //endregion
 
