@@ -55,12 +55,17 @@ public class Cell {
     }
 
     public boolean obstruct(ObstructionType type) {
+        boolean result = false;
         if (type == ObstructionType.PermanentOneCell) {
-            return new PermanentOneCellObstruction().execute(this);
+            result = new PermanentOneCellObstruction().execute(this);
         }
         // TODO можно добавить обработку других типов
 
-        return false;
+        if (result) {
+            fireObstructionExecuted(type);
+        }
+
+        return result;
     }
 
     //endregion
@@ -147,6 +152,15 @@ public class Cell {
         event.setCell(this);
         for (CellActionListener listener : cellListeners) {
             listener.cellStateChanged(event);
+        }
+    }
+
+    protected void fireObstructionExecuted(ObstructionType type) {
+        CellActionEvent event = new CellActionEvent(this);
+        event.setCell(this);
+        event.setObstructionType(type);
+        for (CellActionListener listener : cellListeners) {
+            listener.obstructionExecuted(event);
         }
     }
 
