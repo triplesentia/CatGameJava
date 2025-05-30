@@ -1,47 +1,48 @@
 package game.ui.cell;
 
 import game.model.field.Cat;
-import game.ui.cell.CellWidget.Layer;
 import game.ui.utils.ImageUtils;
 
-import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Виджет кота для ячейки.
+ *
+ * @see Cat
  */
 public class CatWidget extends CellItemWidget {
-    private final Cat cat;
-    private final Color color;
 
-    public CatWidget(Cat cat, Color color) {
+    private final Cat cat;
+
+    public CatWidget(Cat cat) {
         this.cat = cat;
-        this.color = color;
     }
 
     @Override
     protected BufferedImage getImage() {
-        // Draw a simple colored circle for the cat, or load your cat image here
-        int size = getDimension().width;
-        BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = img.createGraphics();
-        g2.setColor(color);
-        g2.fillOval(5, 5, size - 10, size - 10);
-        g2.setColor(Color.BLACK);
-        g2.setStroke(new BasicStroke(3));
-        g2.drawOval(5, 5, size - 10, size - 10);
-        g2.dispose();
-        return img;
+        BufferedImage image = null;
+        try {
+            // Make sure your file is named "cat.png" and located in IMAGE_PATH!
+            image = ImageIO.read(new File(ImageUtils.IMAGE_PATH + "cat.png"));
+            // You can adjust the size as needed
+            image = ImageUtils.resizeImage(image, 100, 100);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
     @Override
-    public Layer getLayer() {
-        return Layer.TOP;
+    public CellWidget.Layer getLayer() {
+        return CellWidget.Layer.TOP;
     }
 
     @Override
     protected Dimension getDimension() {
-        return new Dimension(40, 40); // Cat size, tweak as needed
+        return new Dimension(100, 100);
     }
 }
