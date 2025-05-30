@@ -1,5 +1,6 @@
 package game.ui.cell;
 
+import game.Main;
 import game.model.field.Cell;
 import game.ui.utils.ImageUtils;
 
@@ -37,7 +38,7 @@ public class CellWidget extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 // Optional: check if click is inside hex, not just bounding box
                 if (isPointInHex(e.getX(), e.getY())) {
-                    cell.obstruct(Cell.ObstructionType.PermanentOneCell);
+                    cell.obstruct(Main.OBSTRUCTION_TYPE);
                 }
             }
         });
