@@ -20,7 +20,13 @@ public class WidgetFactory {
 
     /*---------- Cell ----------*/
     public CellWidget create(Cell cell) {
-        return cells.computeIfAbsent(cell, c -> new CellWidget(c));
+        CellWidget cellWidget = cells.computeIfAbsent(cell, c -> new CellWidget(c));
+        Cat cat = cell.getObject();
+        if (cat != null) {
+            CatWidget catWidget = create(cat);
+            cellWidget.addItem(catWidget);
+        }
+        return cellWidget;
     }
 
     public CellWidget getWidget(Cell cell) {
