@@ -50,4 +50,31 @@ public class CellActionEvent extends EventObject {
     }
 
     //endregion
+
+    //region ТИП БЛОКИРОВКИ
+
+    /**
+     * Тип блокировки, связанный с событием.
+     */
+    private Cell.ObstructionType obstructionType;
+
+    /**
+     * Установить тип блокировки {@link CellActionEvent#obstructionType}.
+     *
+     * @param obstructionType тип блокировки.
+     */
+    public void setObstructionType(Cell.ObstructionType obstructionType) {
+        this.obstructionType = obstructionType;
+    }
+
+    /**
+     * Получить тип блокировки {@link CellActionEvent#obstructionType}.
+     *
+     * @return тип блокировки.
+     */
+    public Cell.ObstructionType getObstructionType() {
+        return obstructionType;
+    }
+
+    //endregion
 }
