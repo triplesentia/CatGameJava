@@ -139,6 +139,57 @@ public class Field {
 
     //endregion
 
+    //region ПРОВЕРКА МАРШРУТА
+
+    /**
+     * Может ли кот добраться до любой ячейки на периметре поля.
+     *
+     * @return может ли кот добраться до периметра
+     */
+    public boolean canCatEscapeToPerimeter() {
+        Cat cat = getCat();
+        if (cat == null) {
+            return false;
+        }
+        Cell catCell = cat.getPosition();
+        if (catCell == null) {
+            return false;
+        }
+        return canCatReachPerimeterFrom(catCell);
+    }
+
+    /**
+     * Может ли кот добраться от стартовой ячейки до периметра поля.
+     *
+     * @param startCell начальная ячейка
+     * @return может ли кот добраться до любого края поля
+     */
+    private boolean canCatReachPerimeterFrom(@NotNull Cell startCell) {
+        List<Cell> queue = new LinkedList<>();
+        Set<Cell> visited = new HashSet<>();
+
+        queue.add(startCell);
+        visited.add(startCell);
+
+        while (!queue.isEmpty()) {
+            Cell cell = queue.removeFirst();
+            if (isPerimeterCell(cell)) {
+                return true;
+            }
+            for (Direction dir : Direction.values()) {
+                Cell neighbor = cell.getNeighborCell(dir);
+                if (neighbor == null) continue;
+                if (!neighbor.isBlocked() && neighbor.getObject() == null && !visited.contains(neighbor)) {
+                    queue.add(neighbor);
+                    visited.add(neighbor);
+                }
+            }
+        }
+        return false;
+    }
+
+    //endregion
+
     //region СЛУШАТЕЛИ
 
     private class CellObserver implements CellActionListener {
