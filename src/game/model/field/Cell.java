@@ -1,6 +1,7 @@
 package game.model.field;
 
 import game.model.events.*;
+import game.model.field.obstructions.PermanentOneCellObstruction;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
@@ -42,6 +43,24 @@ public class Cell {
             object = null;
         }
         return result;
+    }
+
+    //endregion
+
+    //region БЛОКИРОВКА ЯЧЕЙКИ
+
+    public enum ObstructionType {
+        PermanentOneCell,
+        // TODO можно добавить другие типы
+    }
+
+    public boolean obstruct(ObstructionType type) {
+        if (type == ObstructionType.PermanentOneCell) {
+            return new PermanentOneCellObstruction().execute(this);
+        }
+        // TODO можно добавить обработку других типов
+
+        return false;
     }
 
     //endregion
