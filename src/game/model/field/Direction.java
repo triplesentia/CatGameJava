@@ -1,43 +1,24 @@
 package game.model.field;
 
 /**
- * Направления.
+ * Направления (ось x, y — axial).
  */
 public enum Direction {
-    /**
-     * Запад.
-     */
-    WEST,
+    WEST(-1, 0),
+    EAST(1, 0),
+    NORTH_WEST(0, -1),
+    NORTH_EAST(1, -1),
+    SOUTH_WEST(-1, 1),
+    SOUTH_EAST(0, 1);
 
-    /**
-     * Восток.
-     */
-    EAST,
+    public final int dx, dy;
 
-    /**
-     * Северо-запад.
-     */
-    NORTH_WEST,
-
-    /**
-     * Северо-восток.
-     */
-    NORTH_EAST,
-
-    /**
-     * Юго-запад.
-     */
-    SOUTH_WEST,
-
-    /**
-     * Юго-восток.
-     */
-    SOUTH_EAST;
-
-    /**
-     * Противоположное направление.
-     */
     private Direction opposite;
+
+    Direction(int dx, int dy) {
+        this.dx = dx;
+        this.dy = dy;
+    }
 
     static {
         WEST.opposite = EAST;
@@ -48,11 +29,6 @@ public enum Direction {
         SOUTH_EAST.opposite = NORTH_WEST;
     }
 
-    /**
-     * Получить противоположное направление {@link Direction#opposite}.
-     *
-     * @return противоположное направление.
-     */
     public Direction getOppositeDirection() {
         return opposite;
     }
