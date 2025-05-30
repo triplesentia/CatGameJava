@@ -1,7 +1,6 @@
 package game.model.field;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 /**
@@ -9,44 +8,16 @@ import java.util.Objects;
  */
 public class Point {
 
-    /**
-     * Координата X.
-     */
     private final int x;
-
-    /**
-     * Координата Y.
-     */
     private final int y;
 
-    /**
-     * Создать координаты.
-     *
-     * @param x координата по оси Х.
-     * @param y координата по оси Y.
-     */
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    /**
-     * Получить координату X ({@link Point#x}).
-     *
-     * @return координата X.
-     */
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * Получить координату Y ({@link Point#y}).
-     *
-     * @return координата Y.
-     */
-    public int getY() {
-        return y;
-    }
+    public int getX() { return x; }
+    public int getY() { return y; }
 
     /**
      * Получить новую точку с заданным смещением в заданном направлении.
@@ -56,47 +27,14 @@ public class Point {
      * @return новая точка с заданным смещением в заданном направлении.
      */
     public Point to(@NotNull Direction direction, int delta) {
-        int newX = x;
-        int newY = y;
-
-        switch (direction) {
-            case EAST:
-                newX += delta;
-                break;
-            case WEST:
-                newX -= delta;
-                break;
-            case NORTH_EAST:
-                newY -= delta;
-                break;
-            case NORTH_WEST:
-                newX -= delta;
-                newY -= delta;
-                break;
-            case SOUTH_EAST:
-                newX += delta;
-                newY += delta;
-                break;
-            case SOUTH_WEST:
-                newY += delta;
-                break;
-        }
-
-        return new Point(newX, newY);
+        return new Point(x + direction.dx * delta, y + direction.dy * delta);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Point p = (Point) o;
-
         return x == p.x && y == p.y;
     }
 
