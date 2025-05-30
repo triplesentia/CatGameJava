@@ -1,11 +1,13 @@
 package game.model;
 
+import game.model.field.Direction;
 import org.jetbrains.annotations.NotNull;
 import game.model.events.*;
 import game.model.field.Field;
 import game.model.field.Cat;
 
 import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.Timer;
 
 /**
@@ -152,6 +154,12 @@ public class Game {
         @Override
         public void fieldCellStateChanged(@NotNull FieldActionEvent event) {
             updateGameStatusWithDelay();
+        }
+
+        @Override
+        public void fieldObstructionExecuted(@NotNull FieldActionEvent event) {
+            updateGameStatus();
+            getCat().move(Direction.values()[new Random().nextInt(Direction.values().length)]);
         }
     }
 
