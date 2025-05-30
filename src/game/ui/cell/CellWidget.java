@@ -36,7 +36,7 @@ public class CellWidget extends JPanel {
         addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                // Optional: check if click is inside hex, not just bounding box
+                System.out.println("Clicked on CellWidget...");
                 if (isPointInHex(e.getX(), e.getY())) {
                     cell.obstruct(Main.OBSTRUCTION_TYPE);
                 }
