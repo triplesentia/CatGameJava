@@ -197,6 +197,11 @@ public class Field {
         public void cellStateChanged(@NotNull CellActionEvent event) {
             fireFieldCellStateChanged(event);
         }
+
+        @Override
+        public void obstructionExecuted(@NotNull CellActionEvent event) {
+            fireFieldObstructionExecuted(event);
+        }
     }
 
     //endregion
@@ -236,6 +241,20 @@ public class Field {
         fieldEvent.setCell(event.getCell());
         for (FieldActionListener listener : fieldListListener) {
             listener.fieldCellStateChanged(fieldEvent);
+        }
+    }
+
+    /**
+     * Оповестить слушателей {@link Field#fieldListListener}, что была применена блокировка.
+     *
+     * @param event событие ячейки.
+     */
+    private void fireFieldObstructionExecuted(@NotNull CellActionEvent event) {
+        FieldActionEvent fieldEvent = new FieldActionEvent(this);
+        fieldEvent.setCell(event.getCell());
+        fieldEvent.setObstructionType(event.getObstructionType());
+        for (FieldActionListener listener : fieldListListener) {
+            listener.fieldObstructionExecuted(fieldEvent);
         }
     }
 
