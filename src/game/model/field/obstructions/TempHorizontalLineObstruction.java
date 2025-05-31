@@ -3,6 +3,7 @@ package game.model.field.obstructions;
 import game.model.field.AbstractObstruction;
 import game.model.field.Cell;
 import game.model.field.Direction;
+import game.model.field.Field;
 
 import java.util.Random;
 
@@ -10,10 +11,8 @@ public class TempHorizontalLineObstruction extends AbstractObstruction {
     private static int STEPS_UNTIL_UNBLOCK = 3;
 
     @Override
-    public boolean execute(Cell target) {
-        boolean success = false;
-
-        success = super.block(target, STEPS_UNTIL_UNBLOCK);
+    public boolean execute(Cell target, Field field) {
+        boolean success = super.block(target, STEPS_UNTIL_UNBLOCK);
 
         if (!success) return false;
 

@@ -2,7 +2,7 @@ package game.model.field;
 
 public abstract class AbstractObstruction {
 
-    public abstract boolean execute(Cell target);
+    public abstract boolean execute(Cell target, Field field);
 
     protected boolean block(Cell target, int stepsUntilUnblock) {
         return target.setBlocked(stepsUntilUnblock);

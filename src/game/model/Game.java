@@ -227,10 +227,10 @@ public class Game {
     private boolean obstruct(Cell cell, ObstructionType type) {
         boolean result = false;
         if (type == ObstructionType.PermanentOneCell) {
-            result = new PermanentOneCellObstruction().execute(cell);
+            result = new PermanentOneCellObstruction().execute(cell, gameField);
         }
         else if (type == ObstructionType.TempHorizontalLine) {
-            result = new TempHorizontalLineObstruction().execute(cell);
+            result = new TempHorizontalLineObstruction().execute(cell, gameField);
         }
         // else if (...) TODO можно добавить обработку других типов
 
