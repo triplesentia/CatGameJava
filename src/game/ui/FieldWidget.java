@@ -63,9 +63,8 @@ public class FieldWidget extends JPanel {
 
             CellWidget cellWidget = widgetFactory.create(cell);
             int px = (int)(pt.getX() - minX);
-            int py = (int)(pt.getY() - minY);
-
-            cellWidget.setBounds(px, py, CELL_SIZE, (int)hexHeight + 1);
+            int py = (int)(pt.getY() - minY - (double) (HEX_HEIGHT - CELL_SIZE) /2);
+            cellWidget.setBounds(px, py, CELL_SIZE, (int)hexHeight);
             add(cellWidget);
 
             // Add cat if present
@@ -77,8 +76,8 @@ public class FieldWidget extends JPanel {
         }
 
         setPreferredSize(new Dimension(
-                (int)(maxX - minX + CELL_SIZE + CELL_SIZE),
-                (int)(maxY - minY + hexHeight + CELL_SIZE)
+                (int)(maxX - minX + CELL_SIZE),
+                (int)(maxY - minY + hexHeight + 30)
         ));
     }
 
