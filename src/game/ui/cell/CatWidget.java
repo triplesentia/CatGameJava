@@ -9,14 +9,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Виджет кота для ячейки.
- *
- * @see Cat
- */
 public class CatWidget extends CellItemWidget {
 
     private final Cat cat;
+    private static final int CAT_SIZE = 48; // Should be <= CELL_SIZE
 
     public CatWidget(Cat cat) {
         this.cat = cat;
@@ -26,10 +22,8 @@ public class CatWidget extends CellItemWidget {
     protected BufferedImage getImage() {
         BufferedImage image = null;
         try {
-            // Make sure your file is named "cat.png" and located in IMAGE_PATH!
             image = ImageIO.read(new File(ImageUtils.IMAGE_PATH + "cat.png"));
-            // You can adjust the size as needed
-            image = ImageUtils.resizeImage(image, 100, 100);
+            image = ImageUtils.resizeImage(image, CAT_SIZE, CAT_SIZE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,6 +37,6 @@ public class CatWidget extends CellItemWidget {
 
     @Override
     protected Dimension getDimension() {
-        return new Dimension(100, 100);
+        return new Dimension(CAT_SIZE, CAT_SIZE);
     }
 }
