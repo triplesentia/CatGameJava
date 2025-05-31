@@ -130,7 +130,15 @@ public class CellWidget extends JPanel {
         // Fill color logic
         Color fillColor;
         if (cell != null && cell.isBlocked()) {
-            fillColor = new Color(60, 60, 60, 180); // nice semi-transparent dark
+            if (cell.getStepsUntilUnblock() == -1) {
+                fillColor = new Color(52, 255, 0, 180);
+            }
+            else if (cell.getStepsUntilUnblock() == 1) {
+                fillColor = new Color(255, 0, 0, 180);
+            }
+            else {
+                fillColor = new Color(255, 145, 0, 180);
+            }
         } else if (isHovered) {
             fillColor = new Color(180, 220, 255, 200); // light blue on hover
         } else {

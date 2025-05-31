@@ -70,20 +70,24 @@ public class Cell {
     /**
      * Заблокирована ли ячейка для прохода/помещения объекта.
      */
-    private boolean isBlocked = false;
+    private int stepsUntilUnblock = 0;
 
     /**
      * Установить состояние проходимости (package-private).
      *
-     * @param blocked true — ячейка заблокирована, false — проходима
-     * @return true если состояние успешно изменено, иначе false
+     * @param stepsUntilUnblock число ходов до разблокировки, -1 — ячейка заблокирована безвременно, 0 - не заблокирована
+     * @return true - если состояние успешно изменено, иначе - false
      */
-    boolean setBlocked(boolean blocked) {
-        if (getObject() != null || isBlocked() == blocked) {
+    boolean setBlocked(int stepsUntilUnblock) {
+        if (stepsUntilUnblock < -1
+                || getObject() != null
+                || (isBlocked() && stepsUntilUnblock != 0)
+                || (!isBlocked() && stepsUntilUnblock == 0)
+        ) {
             return false;
         }
 
-        this.isBlocked = blocked;
+        this.stepsUntilUnblock = stepsUntilUnblock;
         fireCellStateChanged();
         return true;
     }
@@ -94,7 +98,16 @@ public class Cell {
      * @return true — ячейка заблокирована, false — проходима
      */
     public boolean isBlocked() {
-        return isBlocked;
+        return stepsUntilUnblock != 0;
+    }
+
+    /**
+     * Получить количество ходов до разблокировки.
+     *
+     * @return количество ходов до разблокировки.
+     */
+    public int getStepsUntilUnblock() {
+        return stepsUntilUnblock;
     }
 
     //endregion

@@ -7,6 +7,6 @@ public class PermanentOneCellObstruction extends AbstractObstruction {
 
     @Override
     public boolean execute(Cell target) {
-        return super.block(target);
+        return super.block(target, -1);
     }
 }
