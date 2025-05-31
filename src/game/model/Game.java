@@ -211,6 +211,13 @@ public class Game {
     private void executeObstruction(Cell cell) {
         boolean success = obstruct(cell, getCurrentObstructionType());
 
+        if (success) {
+            System.out.println("+ Obstruct successful! +");
+        }
+        else {
+            System.out.println("- Obstruct failed -");
+        }
+
         if (!success) return;
 
         decreaseObstruction(getCurrentObstructionType());
