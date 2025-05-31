@@ -2,7 +2,7 @@ package game.model;
 
 import game.model.field.*;
 import game.model.field.obstructions.PermanentOneCellObstruction;
-import game.model.field.obstructions.TempHorizontalLine;
+import game.model.field.obstructions.TempHorizontalLineObstruction;
 import org.jetbrains.annotations.NotNull;
 import game.model.events.*;
 
@@ -230,7 +230,7 @@ public class Game {
             result = new PermanentOneCellObstruction().execute(cell);
         }
         else if (type == ObstructionType.TempHorizontalLine) {
-            result = new TempHorizontalLine().execute(cell);
+            result = new TempHorizontalLineObstruction().execute(cell);
         }
         // else if (...) TODO можно добавить обработку других типов
 

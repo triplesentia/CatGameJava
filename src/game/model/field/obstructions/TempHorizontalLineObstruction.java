@@ -6,7 +6,7 @@ import game.model.field.Direction;
 
 import java.util.Random;
 
-public class TempHorizontalLine extends AbstractObstruction {
+public class TempHorizontalLineObstruction extends AbstractObstruction {
     private static int STEPS_UNTIL_UNBLOCK = 3;
 
     @Override
