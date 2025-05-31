@@ -2,6 +2,7 @@ package game.model;
 
 import game.model.field.*;
 import game.model.field.obstructions.PermanentOneCellObstruction;
+import game.model.field.obstructions.TempHorizontalLine;
 import org.jetbrains.annotations.NotNull;
 import game.model.events.*;
 
@@ -160,6 +161,9 @@ public class Game {
         if (current > 0) {
             availableObstructions.put(type, current - 1);
         }
+        if (current == 1) {
+            selectObstructionType(ObstructionType.PermanentOneCell);
+        }
     }
 
     public int getObstructionCount(ObstructionType type) {
@@ -172,19 +176,28 @@ public class Game {
 
     private ObstructionType currentObstructionType = ObstructionType.PermanentOneCell;
 
-    public void selectObstructionType(ObstructionType type) {
+    public boolean selectObstructionType(ObstructionType type) {
         if (availableObstructions.containsKey(type) && (getObstructionCount(type) > 0 || getObstructionCount(type) == -1)) {
+            ObstructionType old = this.currentObstructionType;
             this.currentObstructionType = type;
-        } else {
-            throw new IllegalArgumentException("Obstruction type not available: " + type);
+            fireSelectedObstructionChanged(old, type);
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
-    public void selectRandomObstructionType() {
+    public boolean selectRandomObstructionType() {
         List<ObstructionType> types = new ArrayList<>(availableObstructions.keySet());
         types.remove(ObstructionType.PermanentOneCell);
-        if (types.isEmpty()) throw new IllegalStateException("No obstruction types available");
+
+        if (types.isEmpty()) return false;
+
+        ObstructionType old = this.currentObstructionType;
         this.currentObstructionType = types.get((int)(Math.random() * types.size()));
+        fireSelectedObstructionChanged(old, this.currentObstructionType);
+        return true;
     }
 
     public ObstructionType getCurrentObstructionType() {
@@ -215,6 +228,9 @@ public class Game {
         boolean result = false;
         if (type == ObstructionType.PermanentOneCell) {
             result = new PermanentOneCellObstruction().execute(cell);
+        }
+        else if (type == ObstructionType.TempHorizontalLine) {
+            result = new TempHorizontalLine().execute(cell);
         }
         // else if (...) TODO можно добавить обработку других типов
 
@@ -306,6 +322,22 @@ public class Game {
 
         for (GameActionListener listener : gameActionListeners) {
             listener.gameStatusChanged(event);
+        }
+    }
+
+    /**
+     * Оповестить слушателей {@link Game#gameActionListeners}, что выбранный тип обструкции изменился.
+     *
+     * @param oldObstructionType предыдущий тип обструкции.
+     * @param newObstructionType новый тип обструкции.
+     */
+    private void fireSelectedObstructionChanged(@NotNull ObstructionType oldObstructionType, @NotNull ObstructionType newObstructionType) {
+        GameActionEvent event = new GameActionEvent(this);
+        event.setOldObstructionType(oldObstructionType);
+        event.setCurrentObstructionType(newObstructionType);
+
+        for (GameActionListener listener : gameActionListeners) {
+            listener.selectedObstructionChanged(event);
         }
     }
 

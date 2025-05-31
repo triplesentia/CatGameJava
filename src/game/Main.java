@@ -19,14 +19,17 @@ public class Main {
     }
 
     public static final int FIELD_SIDE_LENGTH = 5;
-    public static final ObstructionType OBSTRUCTION_TYPE = ObstructionType.PermanentOneCell;
 
     static class GamePanel extends JFrame {
 
         private Game game;
         private WidgetFactory widgetFactory;
 
+        private JPanel obstructionPanel;
+        private final java.util.Map<ObstructionType, JButton> obstructionButtons = new java.util.EnumMap<>(ObstructionType.class);
+
         public GamePanel() throws HeadlessException {
+            getContentPane().setLayout(new BorderLayout());
             setVisible(true);
             startGame();
             setResizable(false);
@@ -57,8 +60,56 @@ public class Main {
             content.removeAll();
             FieldWidget fieldWidget = new FieldWidget(game.getGameField(), widgetFactory);
             content.add(fieldWidget);
+            createOrUpdateObstructionPanel();
 
             pack();
+        }
+
+        private void createOrUpdateObstructionPanel() {
+            if (obstructionPanel == null) {
+                obstructionPanel = new JPanel();
+                obstructionPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+                getContentPane().add(obstructionPanel, BorderLayout.NORTH);
+            } else {
+                obstructionPanel.removeAll();
+                obstructionButtons.clear();
+            }
+
+            ObstructionType current = game.getCurrentObstructionType();
+
+            for (ObstructionType type : ObstructionType.values()) {
+                int count = game.getObstructionCount(type);
+                String label = type.toString() + (count == -1 ? " ∞" : " " + count);
+
+                JButton btn = new JButton(label);
+
+                if (type == current) {
+                    btn.setEnabled(false);
+                    btn.setBackground(new Color(120, 220, 120)); // pleasant green
+                    btn.setForeground(Color.BLACK);
+                    btn.setOpaque(true);
+                    btn.setBorderPainted(false);
+                } else {
+                    btn.setEnabled(count != 0);
+                    btn.setBackground(UIManager.getColor("Button.background"));
+                    btn.setForeground(UIManager.getColor("Button.foreground"));
+                    btn.setOpaque(true);
+                    btn.setBorderPainted(true);
+                }
+
+                btn.addActionListener(e -> {
+                    boolean success = game.selectObstructionType(type);
+
+                    if (!success) {
+                        System.out.println("- Can't select obstruction type -");
+                    }
+                });
+
+                obstructionButtons.put(type, btn);
+                obstructionPanel.add(btn);
+            }
+            obstructionPanel.revalidate();
+            obstructionPanel.repaint();
         }
 
         private class NewGameAction extends AbstractAction {
@@ -91,7 +142,7 @@ public class Main {
 
             @Override
             public void catIsMoved(@NotNull GameActionEvent event) {
-                // not implemented
+                createOrUpdateObstructionPanel();
             }
 
             @Override
@@ -113,6 +164,12 @@ public class Main {
 
                     showMessage(message);
                 }
+            }
+
+            @Override
+            public void selectedObstructionChanged(@NotNull GameActionEvent event) {
+                createOrUpdateObstructionPanel();
+                System.out.println("+ Obstruction type changed +");
             }
 
             /**

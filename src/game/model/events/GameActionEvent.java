@@ -3,6 +3,7 @@ package game.model.events;
 import org.jetbrains.annotations.NotNull;
 import game.model.GameStatus;
 import game.model.field.Cat;
+import game.model.field.ObstructionType; // Make sure this import exists
 
 import java.util.EventObject;
 
@@ -75,6 +76,56 @@ public class GameActionEvent extends EventObject {
      */
     public void setStatus(GameStatus status) {
         this.status = status;
+    }
+
+    //endregion
+
+    //region ОБСТРУКЦИИ
+
+    /**
+     * Текущий тип обструкции.
+     */
+    private ObstructionType currentObstructionType;
+
+    /**
+     * Предыдущий тип обструкции.
+     */
+    private ObstructionType oldObstructionType;
+
+    /**
+     * Получить текущий тип обструкции.
+     *
+     * @return текущий тип обструкции.
+     */
+    public ObstructionType getCurrentObstructionType() {
+        return currentObstructionType;
+    }
+
+    /**
+     * Установить текущий тип обструкции.
+     *
+     * @param type текущий тип обструкции.
+     */
+    public void setCurrentObstructionType(ObstructionType type) {
+        this.currentObstructionType = type;
+    }
+
+    /**
+     * Получить предыдущий тип обструкции.
+     *
+     * @return предыдущий тип обструкции.
+     */
+    public ObstructionType getOldObstructionType() {
+        return oldObstructionType;
+    }
+
+    /**
+     * Установить предыдущий тип обструкции.
+     *
+     * @param type предыдущий тип обструкции.
+     */
+    public void setOldObstructionType(ObstructionType type) {
+        this.oldObstructionType = type;
     }
 
     //endregion
