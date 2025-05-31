@@ -22,7 +22,8 @@ public class CellWidget extends JPanel {
     }
 
     private final Map<Layer, CellItemWidget> items = new HashMap<>();
-    private static final int CELL_SIZE = 80; // Suitable for hex grid
+    private static final int CELL_SIZE = 60;
+    private static final int HEX_HEIGHT = (int) (Math.sqrt(3) / 2 * CELL_SIZE);
 
     private final Cell cell; // Reference to the model cell
 
@@ -30,7 +31,7 @@ public class CellWidget extends JPanel {
 
     public CellWidget(Cell cell) {
         this.cell = cell;
-        setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
+        setPreferredSize(new Dimension(CELL_SIZE, HEX_HEIGHT));
         setOpaque(false);
         setLayout(null);
 
@@ -117,7 +118,7 @@ public class CellWidget extends JPanel {
 
         int r = CELL_SIZE / 2 - 2;
         int cx = CELL_SIZE / 2;
-        int cy = CELL_SIZE / 2;
+        int cy = HEX_HEIGHT / 2;
         Path2D hex = createHexShape(cx, cy, r);
 
         // Fill color logic
