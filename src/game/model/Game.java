@@ -1,10 +1,9 @@
 package game.model;
 
-import game.model.field.Direction;
+import game.model.field.*;
+import game.model.field.obstructions.PermanentOneCellObstruction;
 import org.jetbrains.annotations.NotNull;
 import game.model.events.*;
-import game.model.field.Field;
-import game.model.field.Cat;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -130,6 +129,42 @@ public class Game {
         return gameField.getCat();
     }
 
+    private void moveCatToUnblockedNeighbor() {
+        boolean success = false;
+        while (!success) {
+            success = getCat().move(Direction.values()[new Random().nextInt(Direction.values().length)]);
+        }
+    }
+
+    //endregion
+
+    //region БЛОКИРОВКА ЯЧЕЙКИ
+
+
+    private void executeObstruction(Cell cell) {
+        boolean success = obstruct(cell, ObstructionType.PermanentOneCell);
+
+        if (!success) return;
+
+        updateGameStatus();
+
+        if (getStatus() != GameStatus.GAME_IS_ON) return;
+
+        moveCatToUnblockedNeighbor();
+
+        gameField.update();
+    }
+
+    private boolean obstruct(Cell cell, ObstructionType type) {
+        boolean result = false;
+        if (type == ObstructionType.PermanentOneCell) {
+            result = new PermanentOneCellObstruction().execute(cell);
+        }
+        // else if (...) TODO можно добавить обработку других типов
+
+        return result;
+    }
+
     //endregion
 
     //region СЛУШАТЕЛИ
@@ -158,15 +193,8 @@ public class Game {
 
         @Override
         public void fieldObstructionExecuted(@NotNull FieldActionEvent event) {
-            updateGameStatus();
-
-            if (getStatus() == GameStatus.GAME_IS_ON) {
-                boolean success = false;
-                while (!success) {
-                    success = getCat().move(Direction.values()[new Random().nextInt(Direction.values().length)]);
-                }
-                gameField.update();
-            }
+            if (getStatus() != GameStatus.GAME_IS_ON) return;
+            executeObstruction(event.getCell());
         }
     }
 

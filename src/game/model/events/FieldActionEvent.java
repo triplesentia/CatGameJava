@@ -51,31 +51,4 @@ public class FieldActionEvent extends EventObject {
     }
 
     //endregion
-
-    //region ТИП БЛОКИРОВКИ
-
-    /**
-     * Тип блокировки, связанный с событием.
-     */
-    private ObstructionType obstructionType;
-
-    /**
-     * Установить тип блокировки {@link FieldActionEvent#obstructionType}.
-     *
-     * @param obstructionType тип блокировки.
-     */
-    public void setObstructionType(ObstructionType obstructionType) {
-        this.obstructionType = obstructionType;
-    }
-
-    /**
-     * Получить тип блокировки {@link FieldActionEvent#obstructionType}.
-     *
-     * @return тип блокировки.
-     */
-    public ObstructionType getObstructionType() {
-        return obstructionType;
-    }
-
-    //endregion
 }

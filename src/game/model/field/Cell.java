@@ -1,7 +1,6 @@
 package game.model.field;
 
 import game.model.events.*;
-import game.model.field.obstructions.PermanentOneCellObstruction;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
@@ -60,18 +59,8 @@ public class Cell {
 
     //region БЛОКИРОВКА ЯЧЕЙКИ
 
-    public boolean obstruct(ObstructionType type) {
-        boolean result = false;
-        if (type == ObstructionType.PermanentOneCell) {
-            result = new PermanentOneCellObstruction().execute(this);
-        }
-        // TODO можно добавить обработку других типов
-
-        if (result) {
-            fireObstructionExecuted(type);
-        }
-
-        return result;
+    public void requestObstruction() {
+        fireObstructionRequested();
     }
 
     //endregion
@@ -174,12 +163,11 @@ public class Cell {
         }
     }
 
-    protected void fireObstructionExecuted(ObstructionType type) {
+    protected void fireObstructionRequested() {
         CellActionEvent event = new CellActionEvent(this);
         event.setCell(this);
-        event.setObstructionType(type);
         for (CellActionListener listener : cellListeners) {
-            listener.obstructionExecuted(event);
+            listener.obstructionRequested(event);
         }
     }
 

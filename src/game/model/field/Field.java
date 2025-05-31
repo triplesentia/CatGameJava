@@ -214,7 +214,7 @@ public class Field {
         }
 
         @Override
-        public void obstructionExecuted(@NotNull CellActionEvent event) {
+        public void obstructionRequested(@NotNull CellActionEvent event) {
             fireFieldObstructionExecuted(event);
         }
     }
@@ -267,7 +267,6 @@ public class Field {
     private void fireFieldObstructionExecuted(@NotNull CellActionEvent event) {
         FieldActionEvent fieldEvent = new FieldActionEvent(this);
         fieldEvent.setCell(event.getCell());
-        fieldEvent.setObstructionType(event.getObstructionType());
         for (FieldActionListener listener : fieldListListener) {
             listener.fieldObstructionExecuted(fieldEvent);
         }

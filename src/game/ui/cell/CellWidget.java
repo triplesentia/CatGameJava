@@ -2,7 +2,6 @@ package game.ui.cell;
 
 import game.Main;
 import game.model.field.Cell;
-import game.ui.utils.ImageUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,13 +40,7 @@ public class CellWidget extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 System.out.println("Clicked...");
                 if (isPointInHex(e.getX(), e.getY())) {
-                    boolean success = cell.obstruct(Main.OBSTRUCTION_TYPE);
-                    if (success) {
-                        System.out.println("+ Obstruct successful! +");
-                    }
-                    else {
-                        System.out.println("- Obstruct failed -");
-                    }
+                    cell.requestObstruction();
                 }
             }
 
