@@ -32,4 +32,28 @@ public enum Direction {
     public Direction getOppositeDirection() {
         return opposite;
     }
+
+    public Direction turnLeft() {
+        switch (this) {
+            case WEST: return SOUTH_WEST;
+            case SOUTH_WEST: return SOUTH_EAST;
+            case SOUTH_EAST: return EAST;
+            case EAST: return NORTH_EAST;
+            case NORTH_EAST: return NORTH_WEST;
+            case NORTH_WEST: return WEST;
+            default: throw new AssertionError();
+        }
+    }
+
+    public Direction turnRight() {
+        switch (this) {
+            case WEST: return NORTH_WEST;
+            case NORTH_WEST: return NORTH_EAST;
+            case NORTH_EAST: return EAST;
+            case EAST: return SOUTH_EAST;
+            case SOUTH_EAST: return SOUTH_WEST;
+            case SOUTH_WEST: return WEST;
+            default: throw new AssertionError();
+        }
+    }
 }
