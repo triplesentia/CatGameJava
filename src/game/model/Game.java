@@ -5,8 +5,7 @@ import game.model.field.obstructions.PermanentOneCellObstruction;
 import org.jetbrains.annotations.NotNull;
 import game.model.events.*;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 import javax.swing.Timer;
 
 /**
@@ -40,6 +39,8 @@ public class Game {
         }
 
         getCat().addCatActionListener(new CatObserver());
+
+        generateAvailableObstructions();
     }
 
     /**
@@ -138,13 +139,68 @@ public class Game {
 
     //endregion
 
+    //region ТИПЫ ПРЕПЯТСТВИЙ
+
+    private Map<ObstructionType, Integer> availableObstructions = new HashMap<>();
+
+    private void generateAvailableObstructions() {
+        availableObstructions.clear();
+        availableObstructions.put(ObstructionType.PermanentOneCell, -1);
+
+        for (ObstructionType type : ObstructionType.values()) {
+            if (type != ObstructionType.PermanentOneCell) {
+                availableObstructions.put(type, 1 + (int) (Math.random() * gameField.getSideLength()));
+            }
+        }
+    }
+
+    private void decreaseObstruction(ObstructionType type) {
+        if (!availableObstructions.containsKey(type)) return;
+        int current = availableObstructions.get(type);
+        if (current > 0) {
+            availableObstructions.put(type, current - 1);
+        }
+    }
+
+    public int getObstructionCount(ObstructionType type) {
+        return availableObstructions.get(type);
+    }
+
+    //endregion
+
+    //region ВЫБОР РЕЖИМА ПРЕПЯТСТВИЯ
+
+    private ObstructionType currentObstructionType = ObstructionType.PermanentOneCell;
+
+    public void selectObstructionType(ObstructionType type) {
+        if (availableObstructions.containsKey(type) && (getObstructionCount(type) > 0 || getObstructionCount(type) == -1)) {
+            this.currentObstructionType = type;
+        } else {
+            throw new IllegalArgumentException("Obstruction type not available: " + type);
+        }
+    }
+
+    public void selectRandomObstructionType() {
+        List<ObstructionType> types = new ArrayList<>(availableObstructions.keySet());
+        types.remove(ObstructionType.PermanentOneCell);
+        if (types.isEmpty()) throw new IllegalStateException("No obstruction types available");
+        this.currentObstructionType = types.get((int)(Math.random() * types.size()));
+    }
+
+    public ObstructionType getCurrentObstructionType() {
+        return currentObstructionType;
+    }
+
+    //endregion
+
     //region БЛОКИРОВКА ЯЧЕЙКИ
 
-
     private void executeObstruction(Cell cell) {
-        boolean success = obstruct(cell, ObstructionType.PermanentOneCell);
+        boolean success = obstruct(cell, getCurrentObstructionType());
 
         if (!success) return;
+
+        decreaseObstruction(getCurrentObstructionType());
 
         updateGameStatus();
 
