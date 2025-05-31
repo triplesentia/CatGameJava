@@ -165,6 +165,7 @@ public class Game {
                 while (!success) {
                     success = getCat().move(Direction.values()[new Random().nextInt(Direction.values().length)]);
                 }
+                gameField.update();
             }
         }
     }

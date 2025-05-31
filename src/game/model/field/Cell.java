@@ -47,6 +47,17 @@ public class Cell {
 
     //endregion
 
+    //region ОБНОВЛЕНИЕ
+
+    void update() {
+        if (getStepsUntilUnblock() > 0) {
+            stepsUntilUnblock--;
+            fireCellStateChanged();
+        }
+    }
+
+    //endregion
+
     //region БЛОКИРОВКА ЯЧЕЙКИ
 
     public boolean obstruct(ObstructionType type) {

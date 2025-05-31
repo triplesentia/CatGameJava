@@ -67,6 +67,16 @@ public class Field {
 
     //endregion
 
+    //region ОБНОВЛЕНИЕ
+
+    public void update() {
+        for (var entry : cells.entrySet()) {
+            entry.getValue().update();
+        }
+    }
+
+    //endregion
+
     //region СВОЙСТВА
 
     /**
