@@ -39,9 +39,15 @@ public class CellWidget extends JPanel {
         addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                System.out.println("Clicked on CellWidget...");
+                System.out.println("Clicked...");
                 if (isPointInHex(e.getX(), e.getY())) {
-                    cell.obstruct(Main.OBSTRUCTION_TYPE);
+                    boolean success = cell.obstruct(Main.OBSTRUCTION_TYPE);
+                    if (success) {
+                        System.out.println("+ Obstruct successful! +");
+                    }
+                    else {
+                        System.out.println("- Obstruct failed -");
+                    }
                 }
             }
 
