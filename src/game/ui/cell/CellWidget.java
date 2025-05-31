@@ -26,6 +26,8 @@ public class CellWidget extends JPanel {
 
     private final Cell cell; // Reference to the model cell
 
+    private boolean isHovered = false;
+
     public CellWidget(Cell cell) {
         this.cell = cell;
         setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
@@ -41,11 +43,22 @@ public class CellWidget extends JPanel {
                     cell.obstruct(Main.OBSTRUCTION_TYPE);
                 }
             }
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                isHovered = true;
+                repaint();
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                isHovered = false;
+                repaint();
+            }
         });
     }
 
     private boolean isPointInHex(int px, int py) {
-        // Simple hit-test for point inside hexagon
         Path2D hex = createHexShape(CELL_SIZE / 2, CELL_SIZE / 2, CELL_SIZE / 2 - 2);
         return hex.contains(px, py);
     }
@@ -99,20 +112,40 @@ public class CellWidget extends JPanel {
         super.paintComponent(g);
 
         // Draw hexagon
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        Path2D hex = createHexShape(CELL_SIZE / 2, CELL_SIZE / 2, CELL_SIZE / 2 - 2);
+        int r = CELL_SIZE / 2 - 2;
+        int cx = CELL_SIZE / 2;
+        int cy = CELL_SIZE / 2;
+        Path2D hex = createHexShape(cx, cy, r);
+
+        // Fill color logic
+        Color fillColor;
         if (cell != null && cell.isBlocked()) {
-            g2.setColor(Color.DARK_GRAY);
+            fillColor = new Color(60, 60, 60, 180); // nice semi-transparent dark
+        } else if (isHovered) {
+            fillColor = new Color(180, 220, 255, 200); // light blue on hover
         } else {
-            g2.setColor(ImageUtils.BACKGROUND_COLOR);
+            fillColor = new Color(255, 255, 230); // soft pastel yellow
         }
+
+        g2.setColor(fillColor);
         g2.fill(hex);
 
+        // Optional: Soft highlight/shadow inside
+        if (isHovered && (cell == null || !cell.isBlocked())) {
+            g2.setColor(new Color(100, 180, 255, 80));
+            g2.setStroke(new BasicStroke(4));
+            g2.draw(hex);
+        }
+
+        // Draw outline
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(2));
         g2.draw(hex);
+
+        g2.dispose();
     }
 
     private Path2D createHexShape(int cx, int cy, int r) {
