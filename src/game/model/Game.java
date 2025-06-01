@@ -3,6 +3,7 @@ package game.model;
 import game.model.field.*;
 import game.model.field.obstructions.PermanentOneCellObstruction;
 import game.model.field.obstructions.TempHorizontalLineObstruction;
+import game.model.field.obstructions.TriangleObstruction;
 import org.jetbrains.annotations.NotNull;
 import game.model.events.*;
 
@@ -238,6 +239,9 @@ public class Game {
         }
         else if (type == ObstructionType.TempHorizontalLine) {
             result = new TempHorizontalLineObstruction().execute(cell, gameField);
+        }
+        else if (type == ObstructionType.Triangle) {
+            result = new TriangleObstruction().execute(cell, gameField);
         }
         // else if (...) TODO можно добавить обработку других типов
 
