@@ -60,6 +60,8 @@ public class Main {
             content.removeAll();
             FieldWidget fieldWidget = new FieldWidget(game.getGameField(), widgetFactory);
             content.add(fieldWidget);
+            obstructionPanel = null;
+            obstructionButtons.clear();
             createOrUpdateObstructionPanel();
 
             pack();
