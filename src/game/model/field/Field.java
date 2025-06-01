@@ -19,7 +19,7 @@ public class Field {
      * @throws IllegalArgumentException если передана невалидная сторона
      */
     public Field(int sideLength) {
-        if (sideLength <= 0) {
+        if (sideLength <= 1) {
             throw new IllegalArgumentException("Field side must be more than 0");
         }
 
