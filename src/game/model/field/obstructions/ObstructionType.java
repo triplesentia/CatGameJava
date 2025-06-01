@@ -1,4 +1,4 @@
-package game.model.field;
+package game.model.field.obstructions;
 
 public enum ObstructionType {
     PermanentOneCell,

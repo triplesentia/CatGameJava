@@ -3,7 +3,7 @@ package game.model.events;
 import org.jetbrains.annotations.NotNull;
 import game.model.GameStatus;
 import game.model.field.Cat;
-import game.model.field.ObstructionType; // Make sure this import exists
+import game.model.field.obstructions.ObstructionType; // Make sure this import exists
 
 import java.util.EventObject;
 

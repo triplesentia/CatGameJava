@@ -1,6 +1,7 @@
 package game.model;
 
 import game.model.field.*;
+import game.model.field.obstructions.ObstructionType;
 import game.model.field.obstructions.PermanentOneCellObstruction;
 import game.model.field.obstructions.TempHorizontalLineObstruction;
 import game.model.field.obstructions.TriangleObstruction;

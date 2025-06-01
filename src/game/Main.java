@@ -4,7 +4,7 @@ import game.model.Game;
 import game.model.GameStatus;
 import game.model.events.GameActionEvent;
 import game.model.events.GameActionListener;
-import game.model.field.ObstructionType;
+import game.model.field.obstructions.ObstructionType;
 import game.ui.FieldWidget;
 import game.ui.WidgetFactory;
 import org.jetbrains.annotations.NotNull;

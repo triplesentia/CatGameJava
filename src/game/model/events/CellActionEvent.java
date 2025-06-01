@@ -1,7 +1,6 @@
 package game.model.events;
 
 import game.model.field.Cell;
-import game.model.field.ObstructionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EventObject;
