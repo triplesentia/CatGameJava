@@ -93,6 +93,10 @@ public class Field {
         return sideLength;
     }
 
+    public int getCellCount() {
+        return cells.size();
+    }
+
     //endregion
 
     //region КОТ
