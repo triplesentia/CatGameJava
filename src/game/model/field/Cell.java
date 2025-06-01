@@ -79,11 +79,7 @@ public class Cell {
      * @return true - если состояние успешно изменено, иначе - false
      */
     boolean setBlocked(int stepsUntilUnblock) {
-        if (stepsUntilUnblock < -1
-                || getObject() != null
-                || (isBlocked() && stepsUntilUnblock != 0)
-                || (!isBlocked() && stepsUntilUnblock == 0)
-        ) {
+        if (stepsUntilUnblock < -1 || getObject() != null) {
             return false;
         }
 
